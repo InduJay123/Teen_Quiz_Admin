@@ -1,0 +1,16 @@
+services:
+  teen-quiz-admin:
+    container_name: teen-quiz-admin
+
+    build:
+      context: .
+      dockerfile: Dockerfile
+      args:
+        VITE_SUPABASE_URL: ${VITE_SUPABASE_URL}
+        VITE_SUPABASE_PUBLISHABLE_KEY: ${VITE_SUPABASE_PUBLISHABLE_KEY}
+        VITE_DEMO_MODE: ${VITE_DEMO_MODE:-false}
+
+    restart: unless-stopped
+
+    ports:
+      - "127.0.0.1:8086:80"
