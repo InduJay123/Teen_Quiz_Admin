@@ -7,7 +7,7 @@ export function createGenerationWorker({ secret, rpc, ai, dispatch }) {
   return async (request) => {
     const respond = (body, status = 200) => new Response(JSON.stringify(body), { status, headers: { 'Content-Type': 'application/json', 'Cache-Control': 'no-store' } })
     if (request.method !== 'POST') return respond({ error: 'Method not allowed.' }, 405)
-    if (!secret || request.headers.get('X-Quiz-Worker-Secret') !== secret) return respond({ error: 'Worker authentication required.' }, 401)
+    if (!secret || request.headers.get('Authorization') !== `Bearer ${secret}`) return respond({ error: 'Worker authentication required.' }, 401)
     let jobId; let stepStarted = false
     try {
       const body = await readLimitedJson(request, 4096)

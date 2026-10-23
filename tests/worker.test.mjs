@@ -31,7 +31,7 @@ function workerFixture(options={}) {
   if(name==='quiz_generation_publish'){job.status='completed';return {job_id:jobId,status:'completed',published_question_count:30}}
   if(name==='quiz_generation_fail'){job.status='failed';job.source_text=null;job.generated_questions=null;job.lesson_plan=null}
  }})
- const request=(action,extra={},secret='worker-test')=>worker(new Request('http://worker.test',{method:'POST',headers:{'X-Quiz-Worker-Secret':secret},body:JSON.stringify({action,job_id:jobId,token,execution_id:'execution',...extra})}))
+ const request=(action,extra={},secret='worker-test')=>worker(new Request('http://worker.test',{method:'POST',headers:{Authorization:`Bearer ${secret}`},body:JSON.stringify({action,job_id:jobId,token,execution_id:'execution',...extra})}))
  return {request,job,calls,dbCalls}
 }
 test('automatic worker path structures, generates, reviews, embeds, stages and publishes without exposing document content',async()=>{
@@ -62,4 +62,14 @@ test('model refusal becomes durable failure, not success',async()=>{
  const f=workerFixture({refusal:true});await f.request('claim')
  assert.equal((await f.request('structuring')).status,400)
  assert.equal(f.job.status,'failed')
+})
+test('worker fails closed for missing configuration, missing bearer, anon and legacy headers',async()=>{
+ for(const secret of ['', 'service-role-test']) {
+  const worker=createGenerationWorker({secret,rpc:async()=>{throw new Error('Must not reach database')},ai:{},dispatch:async()=>{}})
+  for(const headers of [{},{Authorization:'Bearer anon-test'},{Authorization:'service-role-test'},{'X-Quiz-Worker-Secret':'service-role-test'}]) {
+   const response=await worker(new Request('https://worker.test',{method:'POST',headers,body:'{}'}))
+   assert.equal(response.status,401)
+   assert.ok(!(await response.text()).includes('service-role-test'))
+  }
+ }
 })

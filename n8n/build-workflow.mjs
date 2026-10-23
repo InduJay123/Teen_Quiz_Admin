@@ -1,6 +1,12 @@
 import { writeFileSync } from 'node:fs'
 
-const endpoint = 'https://YOUR_PROJECT_REF.supabase.co/functions/v1/quiz-generation-worker'
+// Arguments are non-secret credential ID and project reference, never the key.
+const credentialId = process.argv[2]
+const projectRef = process.argv[3] || 'YOUR_PROJECT_REF'
+if (credentialId && !/^[a-zA-Z0-9_-]{1,64}$/.test(credentialId)) throw new Error('Supply an n8n credential ID, never a key')
+if (!/^[a-zA-Z0-9_-]+$/.test(projectRef)) throw new Error('Invalid project reference')
+const credential = { name: 'Teen Academy Supabase Integration', ...(credentialId ? { id: credentialId } : {}) }
+const endpoint = `https://${projectRef}.supabase.co/functions/v1/quiz-generation-worker`
 const nodes = []
 const connections = {}
 function add(name, type, version, parameters, position, extra = {}) {
@@ -14,7 +20,7 @@ function connect(from, to, output = 0) {
   main[output].push({ node: to, type: 'main', index: 0 })
 }
 function http(name, body, x, y, errors = true) {
-  return add(name, 'n8n-nodes-base.httpRequest', 4.5, {
+  return add(name, 'n8n-nodes-base.httpRequest', 4.4, {
     method: 'POST', url: endpoint, authentication: 'genericCredentialType', genericAuthType: 'httpHeaderAuth',
     sendBody: true, contentType: 'json', specifyBody: 'json', jsonBody: body,
     options: { timeout: 240000, response: { response: { responseFormat: 'json' } }, redirect: { redirect: { followRedirects: false } } },
@@ -42,12 +48,17 @@ for (let index = 0; index < stages.length; index++) {
   if (index + 1 < stages.length) connect(stages[index][0], stages[index + 1][0])
   connect(stages[index][0], 'Record Failure', 1)
 }
-add('Retry Pending Jobs', 'n8n-nodes-base.scheduleTrigger', 1.4, { rule: { interval: [{ field: 'minutes', minutesInterval: 1 }] } }, [0, 480])
+add('Retry Pending Jobs', 'n8n-nodes-base.scheduleTrigger', 1.3, { rule: { interval: [{ field: 'minutes', minutesInterval: 1 }] } }, [0, 480])
 http('Dispatch Pending Jobs', '{"action":"sweep"}', 240, 480, false)
 connect('Retry Pending Jobs', 'Dispatch Pending Jobs')
 const workflow = {
   name: 'Teen Academy Automatic PDF Quiz Generator', active: false, nodes, connections,
   settings: { executionOrder: 'v1', executionTimeout: 900, saveDataErrorExecution: 'none', saveDataSuccessExecution: 'none', saveManualExecutions: false, saveExecutionProgress: false },
   pinData: {}, tags: [],
+}
+for (const node of nodes) {
+  if (['n8n-nodes-base.httpRequest', 'n8n-nodes-base.webhook'].includes(node.type)) {
+    node.credentials = { httpHeaderAuth: { ...credential } }
+  }
 }
 writeFileSync(new URL('./workflows/Teen_Academy_Automatic_PDF_Quiz_Generator.json', import.meta.url), JSON.stringify(workflow, null, 2) + '\n')

@@ -21,3 +21,15 @@ test('every AI/publication HTTP failure routes to persistent failure handling',(
   assert.equal(workflow.connections[name].main[1][0].node,'Record Failure')
  }
 })
+test('one private credential reference covers seven HTTP nodes and authenticated webhook on n8n 2.28.6',()=>{
+ const http=workflow.nodes.filter(n=>n.type==='n8n-nodes-base.httpRequest')
+ assert.equal(http.length,7)
+ const authenticated=workflow.nodes.filter(n=>n.credentials)
+ assert.equal(authenticated.length,8)
+ for(const node of authenticated)assert.deepEqual(node.credentials,{httpHeaderAuth:{name:'Teen Academy Supabase Integration'}})
+ for(const node of http){assert.equal(node.typeVersion,4.4);assert.equal(node.parameters.authentication,'genericCredentialType');assert.equal(node.parameters.headerParameters,undefined)}
+ assert.equal(workflow.nodes.find(n=>n.type==='n8n-nodes-base.scheduleTrigger').typeVersion,1.3)
+ assert.equal(workflow.settings.saveManualExecutions,false)
+ assert.equal(workflow.settings.saveExecutionProgress,false)
+ assert.equal(workflow.settings.saveDataSuccessExecution,'none')
+})

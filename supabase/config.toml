@@ -3,6 +3,6 @@
 [functions.quiz-generation]
 verify_jwt = false
 
-# Server-to-server shared-secret authentication is enforced in the worker.
+# Server-to-server service-role bearer authentication is enforced in the worker.
 [functions.quiz-generation-worker]
 verify_jwt = false

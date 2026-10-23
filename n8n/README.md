@@ -16,8 +16,7 @@ Use Supabase Dashboard > Edge Functions > Secrets, or `supabase secrets set --en
 
 - `QUIZ_ADMIN_ORIGIN`: comma-separated exact production origins; retain every existing origin when updating. `http://localhost:5174` is also allowed explicitly; no wildcard.
 - `QUIZ_N8N_WEBHOOK_URL`: activated workflow's production HTTPS webhook URL.
-- `QUIZ_N8N_WEBHOOK_SECRET`: incoming n8n header-auth secret.
-- `QUIZ_WORKER_SECRET`: separate random outbound worker header-auth secret.
+- No separate webhook or worker secret is required. Both use the Supabase-provided `SUPABASE_SERVICE_ROLE_KEY`.
 - `OPENAI_API_KEY`: server only.
 - `QUIZ_OPENAI_MODEL`: Responses API model supporting strict JSON schema outputs.
 - `QUIZ_OPENAI_REVIEW_MODEL`: optional separate review model; defaults to generation model.
@@ -30,19 +29,27 @@ supabase functions deploy quiz-generation --project-ref <project-ref>
 supabase functions deploy quiz-generation-worker --project-ref <project-ref>
 ```
 
-`config.toml` disables gateway JWT checks for these functions: the admin function verifies the JWT and active `admin_users` membership itself; the worker requires its separate secret. Do not remove these application checks.
+`config.toml` disables gateway JWT checks for these functions: the admin function verifies the JWT and active `admin_users` membership itself; the worker requires the service-role bearer credential. Do not remove these application checks.
 
 ## Exact n8n import steps
 
-1. Open Workflows > Add workflow > menu > Import from file.
-2. Select `n8n/workflows/Teen_Academy_Automatic_PDF_Quiz_Generator.json`.
-3. Replace `YOUR_PROJECT_REF` in every HTTP Request URL with your Supabase project reference.
-4. Create a Header Auth credential with name `X-Quiz-Webhook-Secret` and value matching `QUIZ_N8N_WEBHOOK_SECRET`. Select it on **Authenticated Job Webhook**.
-5. Create another Header Auth credential named `X-Quiz-Worker-Secret`, matching `QUIZ_WORKER_SECRET`. Select it on ALL HTTP Request nodes, including failure and scheduled retry nodes.
-6. Save and activate/publish the new workflow. Copy its production webhook URL into `QUIZ_N8N_WEBHOOK_URL`. Keep execution-payload persistence disabled as exported.
-7. Verify the one-minute scheduled retry branch is active. It recovers accepted but undelivered jobs without a browser remaining open.
+1. In n8n 2.28.6 create ONE **Header Auth** credential named **Teen Academy Supabase Integration**. Header name: **Authorization**. Header value: **Bearer <your existing Supabase service-role key>** (include the space). Save it privately in the same n8n project as the workflow.
+2. Copy its non-secret credential ID from the credential editor URL. Run the following locally with that ID (NOT the key):
 
-No workflow IDs or tool IDs need configuration. The existing live-saving tool is intentionally not called: it bypasses staging. The new backend provides embedding, validation, staging and publication. HTTP Request 4.5, Webhook 2.1, If 2.3 and Schedule Trigger 1.4 parameters were checked against available n8n node definitions; verify support on your instance before activation. This is not evidence of an actual import or execution.
+```powershell
+node n8n/build-workflow.mjs "YOUR_N8N_CREDENTIAL_ID" "ooqhcmnqllhllvyqtham"
+```
+
+3. Import the generated `n8n/workflows/Teen_Academy_Automatic_PDF_Quiz_Generator.json`. The command binds all seven HTTP nodes and the authenticated webhook to that one credential and fills every worker URL. No node-by-node credential setup is needed. Preserve the existing workflow connections; avoid activating a duplicate of an already active workflow with the same webhook path.
+4. Save/publish the workflow and set `QUIZ_N8N_WEBHOOK_URL` to its production HTTPS webhook URL. Verify the scheduled retry branch is active.
+
+The checked-in export contains a credential name only; running the command adds the real non-secret ID. Never pass a key to this script. No secret is stored in workflow JSON. HTTP Request 4.4, Webhook 2.1, If 2.3 and Schedule Trigger 1.3 match the n8n 2.28.6 source definitions. Import/execution on your instance has not been performed.
+
+Both Edge Functions use Supabase's built-in service-role key; no additional server secret needs copying. The deprecated separate secrets can be removed from deployment configuration after both functions and n8n are updated. Keep admin JWT checks and worker authentication enabled. No SQL migration is needed for this authentication change.
+
+Security trade-off: this credential gives n8n project-wide service-role privileges, including bypassing RLS through Supabase APIs. A compromised n8n credential can access much more than this generator. Limit credential/project access, use HTTPS, and rotate the key if exposed. Rotation must also update the one n8n credential. Keep execution persistence disabled; do not pin webhook data or use real keys in manual debug captures. Authorization is marked sensitive in n8n's webhook implementation; ensure reverse proxies/APM redact Authorization and do not enable raw request logging.
+
+One dedicated random integration credential could offer the same one-credential/eight-node convenience while only granting access to these worker/webhook operations, without direct database privileges. It would require one additional server secret. This implementation uses the requested existing service-role key instead.
 
 ## Safely reserve an empty session
 

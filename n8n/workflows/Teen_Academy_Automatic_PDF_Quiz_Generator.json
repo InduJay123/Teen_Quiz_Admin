@@ -26,13 +26,18 @@
           "responseData": "{\"accepted\":true}"
         }
       },
-      "webhookId": "teen-academy-automatic-quiz"
+      "webhookId": "teen-academy-automatic-quiz",
+      "credentials": {
+        "httpHeaderAuth": {
+          "name": "Teen Academy Supabase Integration"
+        }
+      }
     },
     {
       "id": "claim-job",
       "name": "Claim Job",
       "type": "n8n-nodes-base.httpRequest",
-      "typeVersion": 4.5,
+      "typeVersion": 4.4,
       "position": [
         240,
         0
@@ -61,7 +66,12 @@
         }
       },
       "onError": "continueErrorOutput",
-      "retryOnFail": false
+      "retryOnFail": false,
+      "credentials": {
+        "httpHeaderAuth": {
+          "name": "Teen Academy Supabase Integration"
+        }
+      }
     },
     {
       "id": "job-claimed",
@@ -101,7 +111,7 @@
       "id": "structure-lesson",
       "name": "Structure Lesson",
       "type": "n8n-nodes-base.httpRequest",
-      "typeVersion": 4.5,
+      "typeVersion": 4.4,
       "position": [
         720,
         0
@@ -130,13 +140,18 @@
         }
       },
       "onError": "continueErrorOutput",
-      "retryOnFail": false
+      "retryOnFail": false,
+      "credentials": {
+        "httpHeaderAuth": {
+          "name": "Teen Academy Supabase Integration"
+        }
+      }
     },
     {
       "id": "generate-30-questions",
       "name": "Generate 30 Questions",
       "type": "n8n-nodes-base.httpRequest",
-      "typeVersion": 4.5,
+      "typeVersion": 4.4,
       "position": [
         960,
         0
@@ -165,13 +180,18 @@
         }
       },
       "onError": "continueErrorOutput",
-      "retryOnFail": false
+      "retryOnFail": false,
+      "credentials": {
+        "httpHeaderAuth": {
+          "name": "Teen Academy Supabase Integration"
+        }
+      }
     },
     {
       "id": "validate-and-stage",
       "name": "Validate and Stage",
       "type": "n8n-nodes-base.httpRequest",
-      "typeVersion": 4.5,
+      "typeVersion": 4.4,
       "position": [
         1200,
         0
@@ -200,13 +220,18 @@
         }
       },
       "onError": "continueErrorOutput",
-      "retryOnFail": false
+      "retryOnFail": false,
+      "credentials": {
+        "httpHeaderAuth": {
+          "name": "Teen Academy Supabase Integration"
+        }
+      }
     },
     {
       "id": "publish-atomically",
       "name": "Publish Atomically",
       "type": "n8n-nodes-base.httpRequest",
-      "typeVersion": 4.5,
+      "typeVersion": 4.4,
       "position": [
         1440,
         0
@@ -235,13 +260,18 @@
         }
       },
       "onError": "continueErrorOutput",
-      "retryOnFail": false
+      "retryOnFail": false,
+      "credentials": {
+        "httpHeaderAuth": {
+          "name": "Teen Academy Supabase Integration"
+        }
+      }
     },
     {
       "id": "record-failure",
       "name": "Record Failure",
       "type": "n8n-nodes-base.httpRequest",
-      "typeVersion": 4.5,
+      "typeVersion": 4.4,
       "position": [
         960,
         260
@@ -269,13 +299,18 @@
           }
         }
       },
-      "retryOnFail": false
+      "retryOnFail": false,
+      "credentials": {
+        "httpHeaderAuth": {
+          "name": "Teen Academy Supabase Integration"
+        }
+      }
     },
     {
       "id": "retry-pending-jobs",
       "name": "Retry Pending Jobs",
       "type": "n8n-nodes-base.scheduleTrigger",
-      "typeVersion": 1.4,
+      "typeVersion": 1.3,
       "position": [
         0,
         480
@@ -295,7 +330,7 @@
       "id": "dispatch-pending-jobs",
       "name": "Dispatch Pending Jobs",
       "type": "n8n-nodes-base.httpRequest",
-      "typeVersion": 4.5,
+      "typeVersion": 4.4,
       "position": [
         240,
         480
@@ -323,7 +358,12 @@
           }
         }
       },
-      "retryOnFail": false
+      "retryOnFail": false,
+      "credentials": {
+        "httpHeaderAuth": {
+          "name": "Teen Academy Supabase Integration"
+        }
+      }
     }
   ],
   "connections": {
