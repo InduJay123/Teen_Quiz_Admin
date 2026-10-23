@@ -3,6 +3,7 @@ import { NavLink, Outlet, useLocation } from 'react-router-dom'
 import { useAdminAuth } from '../context/AdminAuthContext.jsx'
 
 const navItems = [
+  ['/quiz-generator', 'AI Quiz Generator', '+'],
   ['/dashboard', 'Dashboard', '▦'],
   ['/students', 'Students', '◎'],
   ['/modules', 'Modules', '◫'],

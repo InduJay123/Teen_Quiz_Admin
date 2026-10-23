@@ -45,3 +45,22 @@ export async function listAttempts({ search = '', module = '', limit = 50, offse
 export async function getAttempt(attemptId) {
   return demoMode ? demo.attempt(attemptId) : rpc('admin_get_attempt', { p_attempt_id: attemptId })
 }
+
+async function generationRequest(action, params = {}) {
+  if (demoMode) throw new Error('AI quiz generation is unavailable in demo mode. Connect the configured admin service.')
+  if (!supabase) throw new Error('Supabase is not configured.')
+  const { data, error } = await supabase.functions.invoke('quiz-generation', { body: { action, ...params } })
+  if (error) {
+    let message = 'Could not contact the generation service. Your job status will be checked again.'
+    try { message = (await error.context?.json())?.error || message } catch { /* Network errors have no JSON response. */ }
+    throw new Error(message)
+  }
+  return data
+}
+
+export const getGenerationChoices = () => generationRequest('choices')
+export const getRecentGenerationJob = () => generationRequest('recent')
+export const getGenerationJob = (jobId) => generationRequest('status', { job_id: jobId })
+export const submitGenerationText = ({ bankId, requestId, sourceText, fileBytes, pageCount }) => generationRequest('submit', {
+  bank_id: bankId, request_id: requestId, source_text: sourceText, file_bytes: fileBytes, page_count: pageCount,
+})

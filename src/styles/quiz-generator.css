@@ -1,0 +1,17 @@
+.generator-form { display: grid; gap: 18px; }
+.generator-fields { display: grid; grid-template-columns: 1fr 1fr; gap: 18px; }
+.generator-fields .filter-select { width: 100%; min-width: 0; }
+.generator-upload { border: 1px dashed var(--line-strong, #b8bec7); border-radius: 16px; padding: 22px; background: #f8fafc; }
+.generator-upload input { height: auto; padding: 14px; }
+.generator-upload small, .generator-progress small, .generator-footer small { color: var(--muted); }
+.generator-footer { display: flex; align-items: center; justify-content: space-between; gap: 20px; }
+.generator-footer p { line-height: 1.8; margin: 0; }
+.generator-form button:disabled { opacity: .55; cursor: not-allowed; }
+.generator-warning { color: #854d0e; background: #fff8df; border: 1px solid #e9d58f; padding: 16px; border-radius: 14px; }
+.generator-progress h2 { margin-top: 0; font-size: 21px; }
+.generator-progress { overflow-wrap: anywhere; }
+.generator-completed { border-color: #a7d9bc; background: #f1faf6; }
+@media(max-width:760px) {
+  .generator-fields { grid-template-columns: 1fr; gap: 6px; }
+  .generator-footer { align-items: stretch; flex-direction: column; }
+}
