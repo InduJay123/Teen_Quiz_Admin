@@ -12,8 +12,6 @@ Thumbs.db
 *.log
 npm-debug.log*
 
-# Local Edge Function secrets and verification output
-supabase/functions/.env*
-!supabase/functions/.env.example
+# Test output
 coverage/
 test-results/

@@ -7,11 +7,6 @@ The browser uses only the Supabase publishable key. Admin-only `SECURITY DEFINER
 
 ## Included screens
 
-The **AI Quiz Generator** extracts PDF text locally, processes it asynchronously,
-and atomically publishes 30 validated questions with 10 questions per attempt.
-Setup, session reservation, deployment and staging checks are documented in
-[n8n/README.md](n8n/README.md). It remains disabled until explicitly configured.
-
 - **Dashboard** — total students, attempts, completion rate, average score, score distribution, recent attempts, module performance
 - **Students** — searchable student directory with age, phone, attempt count, average score, best score and latest activity
 - **Student details** — per-module statistics and every quiz attempt for one student

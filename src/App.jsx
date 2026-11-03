@@ -10,7 +10,6 @@ import ModuleDetailsPage from './pages/ModuleDetailsPage.jsx'
 import AttemptsPage from './pages/AttemptsPage.jsx'
 import AttemptDetailsPage from './pages/AttemptDetailsPage.jsx'
 import NotFoundPage from './pages/NotFoundPage.jsx'
-import QuizGeneratorPage from './pages/QuizGeneratorPage.jsx'
 
 function ProtectedRoute() {
   const { loading, user, isAdmin } = useAdminAuth()
@@ -26,7 +25,6 @@ export default function App() {
       <Route element={<ProtectedRoute />}>
         <Route path="/" element={<Navigate to="/dashboard" replace />} />
         <Route path="/dashboard" element={<DashboardPage />} />
-        <Route path="/quiz-generator" element={<QuizGeneratorPage />} />
         <Route path="/students" element={<StudentsPage />} />
         <Route path="/students/:studentId" element={<StudentDetailsPage />} />
         <Route path="/modules" element={<ModulesPage />} />

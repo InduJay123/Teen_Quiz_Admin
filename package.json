@@ -7,25 +7,20 @@
     "dev": "vite",
     "build": "vite build",
     "preview": "vite preview",
-    "test": "npm run test:unit && npm run test:ui",
-    "test:unit": "node --test tests/*.test.mjs",
+    "test": "npm run test:ui",
     "test:ui": "vitest run"
   },
   "dependencies": {
     "@supabase/supabase-js": "^2.55.0",
-    "pdfjs-dist": "^6.4.299",
     "react": "^19.1.1",
     "react-dom": "^19.1.1",
     "react-router-dom": "^7.8.0"
   },
   "devDependencies": {
-    "@electric-sql/pglite": "^0.5.11",
-    "@electric-sql/pglite-pgvector": "^0.0.12",
     "@testing-library/jest-dom": "^6.9.1",
     "@testing-library/react": "^16.3.0",
     "@vitejs/plugin-react": "^4.7.0",
     "jsdom": "^26.1.0",
-    "pdf-lib": "^1.17.1",
     "vite": "^7.3.7",
     "vitest": "^4.1.12"
   }

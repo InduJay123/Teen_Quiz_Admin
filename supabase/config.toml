@@ -1,8 +1,0 @@
-# JWTs are validated by auth.getUser() in the handler, followed by active-admin
-# authorization. This also supports projects using newer JWT signing keys.
-[functions.quiz-generation]
-verify_jwt = false
-
-# Server-to-server service-role bearer authentication is enforced in the worker.
-[functions.quiz-generation-worker]
-verify_jwt = false
