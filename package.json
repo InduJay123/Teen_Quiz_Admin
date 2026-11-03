@@ -7,8 +7,9 @@
     "dev": "vite",
     "build": "vite build",
     "preview": "vite preview",
-    "test": "npm run test:ui",
-    "test:ui": "vitest run"
+    "test": "npm run test:db && npm run test:ui",
+    "test:ui": "vitest run",
+    "test:db": "node --test tests/cohort-database.test.mjs"
   },
   "dependencies": {
     "@supabase/supabase-js": "^2.55.0",
@@ -17,6 +18,7 @@
     "react-router-dom": "^7.8.0"
   },
   "devDependencies": {
+    "@electric-sql/pglite": "^0.5.14",
     "@testing-library/jest-dom": "^6.9.1",
     "@testing-library/react": "^16.3.0",
     "@vitejs/plugin-react": "^4.7.0",

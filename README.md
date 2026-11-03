@@ -7,6 +7,8 @@ The browser uses only the Supabase publishable key. Admin-only `SECURITY DEFINER
 
 ## Included screens
 
+Cohort-wise module analytics use the verified student profile and schedule schema. See [cohort setup, final SQL, and manual deployment instructions](supabase/COHORT_SETUP.md) before deploying this feature.
+
 - **Dashboard** — total students, attempts, completion rate, average score, score distribution, recent attempts, module performance
 - **Students** — searchable student directory with age, phone, attempt count, average score, best score and latest activity
 - **Student details** — per-module statistics and every quiz attempt for one student

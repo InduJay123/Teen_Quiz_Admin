@@ -1,0 +1,30 @@
+﻿.cohort-selector, .cohort-tabs, .cohort-pagination { display: flex; gap: 12px; flex-wrap: wrap; align-items: center; }
+.cohort-selector button[aria-pressed="true"] { box-shadow: 0 0 0 3px var(--gold-soft); }
+.cohort-tabs { border-bottom: 1px solid var(--line); gap: 4px; }
+.cohort-tabs a { padding: 12px 16px; color: inherit; border-radius: 12px 12px 0 0; text-decoration: none; }
+.cohort-tabs a.active { background: var(--gold-soft); color: var(--navy); font-weight: 700; border-bottom: 3px solid var(--gold); }
+.cohort-content { min-width: 0; }
+.cohort-content .section-heading { flex-wrap: wrap; gap: 16px; }
+.cohort-filters { margin-bottom: 20px; flex-wrap: wrap; }
+.cohort-content label { display: flex; flex-direction: column; gap: 8px; font-size: 13px; }
+.cohort-search { margin-bottom: 20px; max-width: 360px; }
+.cohort-pagination { justify-content: flex-end; margin-top: 20px; }
+.cohort-pagination span { margin-right: auto; font-size: 13px; }
+.cohort-pagination button:disabled { opacity: .45; cursor: not-allowed; }
+.cohort-session-metrics { display: grid; grid-template-columns: repeat(2,minmax(0,1fr)); gap: 14px; width: 100%; }
+.cohort-session-metrics dt { font-size: 12px; color: var(--muted); }
+.cohort-session-metrics dd { margin: 4px 0 0; font-weight: 700; }
+.cohort-note { font-size: 13px; color: var(--muted); line-height: 1.7; }
+.cohort-options { display: grid; gap: 10px; padding: 0; list-style: none; }
+.cohort-options li { padding: 12px; border: 1px solid var(--line); border-radius: 10px; }
+.cohort-options .pill { margin-left: 12px; }
+.cohort-options .is-correct-option { border-color: #8bd5ac; background: #effcf4; }
+.cohort-breadcrumb { display: flex; gap: 8px; flex-wrap: wrap; font-size: 13px; }
+@media (max-width: 640px) {
+  .cohort-tabs a { padding: 10px; font-size: 13px; }
+  .cohort-filters, .cohort-content .section-heading > label { width: 100%; }
+  .cohort-filters label, .cohort-filters input, .cohort-filters select { width: 100%; min-width: 0; }
+  .cohort-selector button { flex: 1 1 auto; }
+}
+
+.cohort-content .session-analytic-card { display: flex; flex-direction: column; align-items: stretch; }
